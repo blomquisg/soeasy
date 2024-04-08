@@ -1,0 +1,9 @@
+FROM quay.io/centos-bootc/centos-bootc:stream9
+
+RUN dnf -y update; dnf install -y httpd mariadb mariadb-server php-fpm php-mysqlnd && dnf clean all && rm -rf /var/cache /var/log/dnf
+
+ARG SSH_PUBLIC_KEY
+RUN mkdir /usr/etc-system && \
+    echo "AuthorizedKeysFile /usr/etc-system/%u.keys" >> /etc/ssh/sshd_config.d/30-auth-system.conf && \
+    echo $SSH_PUBLIC_KEY > /usr/etc-system/root.keys && \
+    chmod 0600 /usr/etc-system/root.keys
